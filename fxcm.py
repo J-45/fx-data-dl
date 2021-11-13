@@ -1,8 +1,9 @@
+import os
 import gzip
 import urllib
 import datetime 
 
-url                 = 'https://tickdata.fxcorporate.com/' ##This is the base url 
+url                 = 'https://tickdata.fxcorporate.com/'
 url_suffix          = 'csv.gz'
 first_year          = 2018
 last_year           = datetime.datetime.now().year
@@ -13,11 +14,12 @@ symbol_list         = ['AUDCAD','AUDCHF','AUDJPY', 'AUDNZD','CADCHF','EURAUD','E
 error_list          = []
 
 for symbol in symbol_list:
+    os.makedirs(symbol, exist_ok=True)
     for year in range(first_year, last_year + 1):
         if year != last_year:
-            end_week = datetime.date(year,12,29).isocalendar()[1] ##last week of the year
+            end_week = datetime.date(year,12,29).isocalendar()[1] # last week of the year
         else:
-            end_week = datetime.datetime.now().isocalendar()[1] # gt current week
+            end_week = datetime.datetime.now().isocalendar()[1] - 1 # get last week
 
         print(symbol, year)
         for weeknumber in range(start_wk, end_week):
@@ -25,10 +27,10 @@ for symbol in symbol_list:
             print(url_data)
             try:
                 requests    = urllib.request.urlopen(url_data)
-                with gzip.open(f'{symbol}_{year}_{weeknumber}.{url_suffix}', 'wb') as zip:
+                with gzip.open(f'{symbol}/{year}_{weeknumber}.{url_suffix}', 'wb') as zip:
                     zip.write(requests.read())
             except urllib.error.HTTPError as exception:
-                error_list  += [url_data]
+                error_list.append(url_data)
                 print(exception)
 
 print(f'Missing:\n{error_list}')
