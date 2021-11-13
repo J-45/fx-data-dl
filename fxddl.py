@@ -1,13 +1,15 @@
+#!/usr/bin/python3
+
 import os
 import gzip
+import shutil
 import urllib
 import datetime 
+from io import BytesIO
 
 url                 = 'https://tickdata.fxcorporate.com/'
-url_suffix          = 'csv.gz'
 first_year          = 2018
 last_year           = datetime.datetime.now().year
-start_wk            = 1
 symbol_list         = ['AUDCAD','AUDCHF','AUDJPY', 'AUDNZD','CADCHF','EURAUD','EURCHF','EURGBP' 
 'EURJPY','EURUSD','GBPCHF','GBPJPY','GBPNZD','GBPUSD','GBPCHF','GBPJPY'
 'GBPNZD','NZDCAD','NZDCHF','NZDJPY','NZDUSD','USDCAD','USDCHF','USDJPY']
@@ -21,16 +23,17 @@ for symbol in symbol_list:
         else:
             end_week = datetime.datetime.now().isocalendar()[1] - 1 # get last week
 
-        print(symbol, year)
-        for weeknumber in range(start_wk, end_week):
-            url_data = url + symbol+'/'+str(year)+'/'+str(weeknumber)+'.'+url_suffix
+        for weeknumber in range(1, end_week):
+            url_data = url + symbol+'/'+str(year)+'/'+str(weeknumber)+'.csv.gz'
             print(url_data)
             try:
                 requests    = urllib.request.urlopen(url_data)
-                with gzip.open(f'{symbol}/{year}_{weeknumber}.{url_suffix}', 'wb') as zip:
-                    zip.write(requests.read())
             except urllib.error.HTTPError as exception:
                 error_list.append(url_data)
                 print(exception)
+            with open(f'{symbol}/{year}_{weeknumber}.csv', 'wb') as f_out:
+                buffer = BytesIO(requests.read())
+                f = gzip.GzipFile(fileobj=buffer)
+                shutil.copyfileobj(f, f_out)
 
 print(f'Missing:\n{error_list}')
