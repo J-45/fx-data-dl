@@ -1,10 +1,6 @@
 #!/usr/bin/python3
 
-import os
-import gzip
-import shutil
-import urllib
-import datetime 
+import os, gzip, shutil, urllib, datetime 
 from io import BytesIO
 
 url                 = 'https://tickdata.fxcorporate.com/'
@@ -22,7 +18,6 @@ for symbol in symbol_list:
             end_week = datetime.date(year,12,29).isocalendar()[1] # last week of the year
         else:
             end_week = datetime.datetime.now().isocalendar()[1] - 1 # get last week
-
         for weeknumber in range(1, end_week):
             url_data = url + symbol+'/'+str(year)+'/'+str(weeknumber)+'.csv.gz'
             print(url_data)
@@ -31,9 +26,9 @@ for symbol in symbol_list:
             except urllib.error.HTTPError as exception:
                 error_list.append(url_data)
                 print(exception)
-            with open(f'{symbol}/{year}_{weeknumber}.csv', 'wb') as f_out:
-                buffer = BytesIO(requests.read())
-                f = gzip.GzipFile(fileobj=buffer)
-                shutil.copyfileobj(f, f_out)
+            with open(f'{symbol}/{year}_{weeknumber}.csv', 'wb') as local_file:
+                compressed = BytesIO(requests.read())
+                decompressed = gzip.GzipFile(fileobj=compressed)
+                shutil.copyfileobj(decompressed, local_file)
 
 print(f'Missing:\n{error_list}')
