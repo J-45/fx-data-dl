@@ -3,6 +3,7 @@
 import os, gzip, shutil, urllib, datetime 
 from io import BytesIO
 
+# url                 = 'https://candledata.fxcorporate.com/'
 url                 = 'https://tickdata.fxcorporate.com/'
 first_year          = 2018
 last_year           = datetime.datetime.now().year
