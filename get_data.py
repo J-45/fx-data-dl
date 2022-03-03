@@ -1,9 +1,8 @@
 #!/usr/bin/python3
 
-import os, gzip, shutil, urllib, datetime 
+import os, gzip, shutil, urllib.request, datetime 
 from io import BytesIO
 
-# url                 = 'https://candledata.fxcorporate.com/'
 url                 = 'https://tickdata.fxcorporate.com/'
 first_year          = 2018
 last_year           = datetime.datetime.now().year
