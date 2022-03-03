@@ -23,12 +23,12 @@ for symbol in symbol_list:
             print(url_data)
             try:
                 requests    = urllib.request.urlopen(url_data)
+                with open(f'{symbol}/{year}_{weeknumber}.csv', 'wb') as local_file:
+                    compressed = BytesIO(requests.read())
+                    decompressed = gzip.GzipFile(fileobj=compressed)
+                    shutil.copyfileobj(decompressed, local_file)
             except urllib.error.HTTPError as exception:
                 error_list.append(url_data)
                 print(exception)
-            with open(f'{symbol}/{year}_{weeknumber}.csv', 'wb') as local_file:
-                compressed = BytesIO(requests.read())
-                decompressed = gzip.GzipFile(fileobj=compressed)
-                shutil.copyfileobj(decompressed, local_file)
 
 print(f'Missing:\n{error_list}')
