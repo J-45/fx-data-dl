@@ -1,0 +1,2 @@
+https://docs.python.org/3/library/concurrent.futures.html
+https://www.digitalocean.com/community/tutorials/how-to-use-threadpoolexecutor-in-python-3-fr
