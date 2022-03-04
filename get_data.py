@@ -1,6 +1,5 @@
 #!/usr/bin/python3
 
-from socket import error as SocketError
 import concurrent.futures
 import urllib.request
 import datetime
