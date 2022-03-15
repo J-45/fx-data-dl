@@ -48,10 +48,10 @@ with concurrent.futures.ThreadPoolExecutor(max_workers=NUMBER_OF_THREADS) as Exe
         os.makedirs(SYMBOL, exist_ok=True)
         for YEAR in range(FIRST_YEAR, LAST_YEAR + 1):
             if YEAR != LAST_YEAR:
-                END_WEEK    = datetime.date(YEAR,12,29).isocalendar()[1] # last week of the year
+                LAST_WEEK    = datetime.date(YEAR,12,29).isocalendar()[1] # last week of the year
             else:
-                END_WEEK    = datetime.datetime.now().isocalendar()[1] - 2 # two week before today
-            for WEEKNUMBER in range(1, END_WEEK + 1):
+                LAST_WEEK    = datetime.datetime.now().isocalendar()[1] - 2 # two week before today
+            for WEEKNUMBER in range(1, LAST_WEEK + 1):
                 DATA_URL    = BASE_URL + SYMBOL+'/'+str(YEAR)+'/'+str(WEEKNUMBER)+'.csv.gz'
                 FILE_PATH   = f'{SYMBOL}/{YEAR}_{WEEKNUMBER}.csv'
                 futures.append(Executor.submit(download, URL=DATA_URL,file_path=FILE_PATH,bad_url_list=bad_url_list))
@@ -62,3 +62,5 @@ with concurrent.futures.ThreadPoolExecutor(max_workers=NUMBER_OF_THREADS) as Exe
 print(f"\n{len(bad_url_list)} bad urls out of {url_count}:")
 for BAD_URL in bad_url_list:
     print(BAD_URL)
+
+# Source: https://github.com/fxcm/MarketData/blob/master/TickData/TickData34.py
